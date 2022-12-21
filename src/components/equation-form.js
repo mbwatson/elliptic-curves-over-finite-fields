@@ -13,8 +13,8 @@ export const EquationForm = () => {
     }}>
       <InlineMath math={ `
         y^2 = x^3 
-        ${ params.a < 0 ? `${ params.a }x` : `+ ${ params.a }` }
-        ${ params.b < 0 ? `${ params.b }` : `+ ${ params.b }` }
+        ${ params.a === 0 ? '' : params.a < 0 ? `${ params.a === 1 ? '' : params.a }x` : `+ ${ params.a === 1 ? '' : params.a }x` }
+        ${ params.b === 0 ? '' :  params.b < 0 ? `${ params.b }` : `+ ${ params.b }` }
       ` } />
       <div>
         <span>a = { params.a }</span>

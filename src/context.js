@@ -7,8 +7,8 @@ export const useApp = () => useContext(AppContext)
 
 export const AppContextProvider = ({ children }) => {
   const [generator, setGenerator] = useState(null)
-  const [params, setParams] = useState({ a: -7, b: 10 })
-  const [modulus, setModulus] = useState(19)
+  const [params, setParams] = useState({ a: 1, b: 1 })
+  const [modulus, setModulus] = useState(7)
 
   useEffect(() => {
     setGenerator(null)
