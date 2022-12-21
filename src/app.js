@@ -3,11 +3,10 @@ import { EquationForm } from './components/equation-form'
 import { FiniteFieldGraph } from './components/finite-field-graph'
 import { ModulusForm } from './components/modulus-form'
 import { useApp } from './context'
+import { SubgroupTable } from './components/subgroup-table'
 
 export const App = () => {
-  const {
-    graph, params
-  } = useApp()
+  const { graph, params } = useApp()
 
   return (
     <Fragment>
@@ -20,6 +19,7 @@ export const App = () => {
         <ModulusForm  />
       </div>
       <FiniteFieldGraph width={ 800 } />
+      <SubgroupTable />
     </Fragment>
   )
 }
