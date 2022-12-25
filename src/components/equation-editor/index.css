@@ -1,0 +1,32 @@
+.equation-editor {
+  font-size: 125%;
+  padding: 0 1rem;
+  min-height: 4rem;
+}
+
+.equation-editor.unlocked {
+  background-color: #0001;
+}
+
+.equation-editor input {
+  width: 3rem;
+}
+
+.equation-editor .equation {
+  height: 3rem;
+  vertical-align: middle;
+}
+
+.equation-editor.locked .equation * {
+  color: teal !important;
+}
+
+.equation-editor.unlocked .equation * {
+  color: #333 !important;
+}
+
+.equation-editor div {
+  display: flex;
+  align-items: center;
+}
+
