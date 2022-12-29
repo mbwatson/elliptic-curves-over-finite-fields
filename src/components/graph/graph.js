@@ -1,64 +1,122 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 
-const axisLabelProps = {
-  fill: 'slategrey',
-  fontSize: 'smaller',
-  textAnchor: 'middle',
-  dominantBaseline: 'middle',
-}
-
-export const FiniteFieldGraph = ({ n, width, cells, onClickCell }) => {
+export const GraphGrid = ({ n, width, cells, onClickCell }) => {
+  const [activeColumn, setActiveColumn] = useState(null)
+  const [activeRow, setActiveRow] = useState(null)
   const margin = 20
-  const gridWidth = width - margin
+  const gridWidth = width - 2 * margin
 
   const cellWidth = useMemo(() => gridWidth / n, [n])
   const scalars = useMemo(() => [...Array(n).keys()], [n])
+
+  const handleHoverGraphCell = event => {
+    setActiveColumn(event.target.dataset.x)
+    setActiveRow(event.target.dataset.y)
+  }
+
+  const handleLeaveGraphCell = event => {
+    setActiveColumn(null)
+    setActiveRow(null)
+  }
+
+  const axisLabelProps = {
+    fill: 'slategrey',
+    fontSize: 'smaller',
+    textAnchor: 'middle',
+    dominantBaseline: 'middle',
+  }
 
   const sharedCellProps = {
     width: cellWidth,
     height: cellWidth,
   }
 
-  const XAxis = useCallback(() => scalars.map(col => (
+  // background grid
+  const GridLines = useCallback(() => {
+    return scalars.concat(n).reduce((lines, x) => {
+      return [
+        ...lines,
+        <line 
+          key={ `grid-v-line-${ x }` } 
+          className="grid-line"
+          x1={ cellWidth * x } x2={ cellWidth * x }
+          y1="0" y2={ gridWidth }
+        />,
+        <line 
+          key={ `grid-h-line-${ x }` } 
+          className="grid-line"
+          x1="0" x2={ gridWidth }
+          y1={ cellWidth * x } y2={ cellWidth * x }
+        />,
+      ]
+    }, [])
+  }, [cellWidth, scalars])
+
+  // axis labels
+  const XAxisLabels = useCallback(() => scalars.map(x => (
     <text
-      key={ `x-axis-label${ col }` }
-      x={ col * cellWidth + cellWidth / 2 } y={ -10 }
+      key={ `x-axis-label${ x }` }
+      className={ `x-axis-label-${ x }` }
+      x={ x * cellWidth + cellWidth / 2 } y={ -10 }
       { ...axisLabelProps }
-    >{ col }</text>
+    >{ x }</text>
   )), [scalars, cellWidth])
 
-  const YAxis = useCallback(() => scalars.map(col => (
+  const YAxisLabels = useCallback(() => scalars.map(y => (
     <text
-      key={ `x-axis-label${ col }` }
-      x={ -10 } y={ col * cellWidth + cellWidth / 2 }
+      key={ `y-axis-label${ y }` }
+      className={ `y-axis-label-${ y }` }
+      x={ -10 } y={ y * cellWidth + cellWidth / 2 }
       { ...axisLabelProps }
-    >{ col }</text>
+    >{ y }</text>
   )), [scalars, cellWidth])
 
-  const grid = useMemo(() => scalars.reduce((allCells, col) => {
-    return [
-      ...allCells,
-      ...scalars.map(row => ({
-        x: col, _x: cellWidth * col,
-        y: row, _y: cellWidth * row,
-        style: { fill: '#0152', stroke: 'white' }
-      }))
-    ]
-  }, []), [cellWidth, scalars])
+  // incoming cells
+  const GraphCells = useCallback(() => cells.map(cell => 
+    <rect
+      key={ cell.key }
+      className="graph-cell"
+      x={ cellWidth * cell.x } y={ cellWidth * cell.y }
+      data-x={ cell.x } data-y={ cell.y }
+      onClick={ handleClickGraphCell(cell) }
+      { ...sharedCellProps }
+      { ...cell.rectProps }
+      onMouseOver={ handleHoverGraphCell }
+      onMouseOut={ handleLeaveGraphCell }
+    />
+  ), [cells])
 
   const handleClickGraphCell = cell => () => {
-    if (!onClickCell) {
-      return
-    }
-    onClickCell(cell)
+    onClickCell && onClickCell(cell)
   }
+
+  const Highlighting = useCallback(() => {
+    if (!activeColumn || !activeRow) {
+      return null
+    }
+
+    return [
+      <rect
+        key="column-highlight"
+        x={ activeColumn * cellWidth } y={ 0 }
+        width={ cellWidth } height={ n * cellWidth }
+        fill="#ff02"
+      />,
+      <rect
+        key="row-highlight"
+        x={ 0 } y={ activeRow * cellWidth }
+        width={ n * cellWidth } height={ cellWidth }
+        fill="#ff02"
+      />
+    ]
+  }, [activeColumn, activeRow])
 
   return (
     <svg
       className="graph"
-      width={ gridWidth + margin }
-      height={ gridWidth + margin }
+      width={ gridWidth + 2 * margin }
+      height={ gridWidth + 2 * margin }
     >
       <defs>
         <filter id="glow">
@@ -66,40 +124,17 @@ export const FiniteFieldGraph = ({ n, width, cells, onClickCell }) => {
         </filter>
       </defs>
       <g transform={ `translate(${ margin } ${ margin })` }>
-        <XAxis />
-        <YAxis />
-        {
-          // background grid
-          grid.map(cell => 
-            <rect
-              className="grid-cell"
-              key={ `background-cell-${ cell.x }-${ cell.y }` }
-              x={ cell._x } y={ cell._y }
-              { ...sharedCellProps }
-              { ...cell.style }
-            />
-          )
-        }
-        {
-          // incoming cells
-          cells.map(cell => 
-            <rect
-              className="graph-cell"
-              key={ `cell-${ cell.x }-${ cell.y }` }
-              x={ cellWidth * cell.x } y={ cellWidth * cell.y }
-              onClick={ handleClickGraphCell(cell) }
-              { ...sharedCellProps }
-              { ...cell.rectProps }
-              strokeWidth="2"
-            />
-          )
-        }
+        <XAxisLabels />
+        <YAxisLabels />
+        <Highlighting />
+        <GridLines />
+        <GraphCells />
       </g>
     </svg>
   )
 }
 
-FiniteFieldGraph.propTypes = {
+GraphGrid.propTypes = {
   n: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
   cells: PropTypes.array.isRequired,

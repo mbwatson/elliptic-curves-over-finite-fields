@@ -2,6 +2,9 @@
   font-size: 125%;
   padding: 0 1rem;
   min-height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .equation-editor.unlocked {
@@ -14,7 +17,6 @@
 
 .equation-editor .equation {
   height: 3rem;
-  vertical-align: middle;
 }
 
 .equation-editor.locked .equation * {
@@ -24,9 +26,3 @@
 .equation-editor.unlocked .equation * {
   color: #333 !important;
 }
-
-.equation-editor div {
-  display: flex;
-  align-items: center;
-}
-

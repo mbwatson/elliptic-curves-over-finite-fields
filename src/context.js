@@ -43,6 +43,13 @@ export const ConfigProvider = ({ children }) => {
     }`
   }, [modulus, params.a, params.b])
 
+  const homogenizationLatex = useMemo(() => {
+    return `F(x,y,z) = y^2z - x^3 
+      ${ params.a === 0 ? '' : `- ${ params.a === 1 ? '' : params.a }xz^2` }
+      ${ params.b === 0 ? '' : `- ${ params.b }z^3`
+    }`
+  }, [modulus, params.a, params.b])
+
   const graph = useMemo(() => scalars.reduce((allCells, col) => [
     ...allCells,
     ...scalars.map(row => ({ x: col, y: row })).filter(check)
@@ -110,7 +117,7 @@ export const ConfigProvider = ({ children }) => {
       modulus, setModulus, modInverse,
       generator, setGenerator, subgroup,
       params, setParam, discriminant,
-      equationLatex, scalars, graph, slopeAt, addPoints,
+      equationLatex, homogenizationLatex, scalars, graph, slopeAt, addPoints,
       check, 
     }}>
       { children }

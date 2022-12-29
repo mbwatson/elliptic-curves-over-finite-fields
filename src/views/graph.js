@@ -1,7 +1,8 @@
-import { Fragment, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { Stack } from 'rsuite'
 import { Resizable } from 're-resizable'
 import { useConfig } from '../context'
-import { Details, FiniteFieldGraph, GraphHeader } from '../components/graph'
+import { Details, GraphGrid } from '../components/graph'
 
 //
 
@@ -14,60 +15,82 @@ export const GraphView = () => {
   }
 
   const cells = useMemo(() => {
-    const graphCells = graph.map(({ x, y }) => ({
+    const generatorRectProps = {
+      style: { cursor: 'pointer' },
+      stroke: 'cyan',
+      strokeWidth: 2,
+      filter: 'url(#glow)',
+      fill:  'transparent',
+    }
+    const normalRectProps = {
+      style: { cursor: 'pointer' },
+      stroke: 'transparent',
+      filter: 'none',
+      fill: '#0246',
+    }
+    let returnCells = graph.map(({ x, y }) => ({
       x, y,
-      rectProps: generator && generator.x === x && generator.y === y ? ({
-        style: { cursor: 'pointer' },
-        stroke: 'cyan',
-        filter: 'url(#glow)',
-        fill:  'darkcyan',
-      }) : ({
-        style: { cursor: 'pointer' },
-        stroke: 'transparent',
-        filter: 'none',
-        fill: '#0246',
-      }),
+      rectProps: { ...normalRectProps },
+      key: `cell-${ x }-${ y }`,
     })).map(cell => {
       if (subgroup.some(g => g.x === cell.x && g.y === cell.y)) {
         cell.rectProps.fill = 'darkcyan'
       }
       return cell
     })
-    return [...graphCells]
+    if (generator) {
+      const generatorIndicator = {
+        x: generator.x,
+        y: generator.y,
+        key: `generator-${ generator.x }-${ generator.y }`,
+        rectProps: { ...generatorRectProps },
+      }
+      returnCells.push(generatorIndicator)
+    }
+    return [...returnCells]
   }, [generator, graph])
 
   return (
-    <Fragment>
-      <GraphHeader />
-
-      <Resizable
-        size={{ width: size, height: size }}
-        enable={{
-          bottomRight: true, right: true, bottom: true,
-          top: false, left: false, topRight: false, bottomLeft: false, topLeft: false,
-        }}
-        onResizeStop={ handleResizeStop }
-        lockAspectRatio
-        style={{ backgroundColor: '#eee' }}
-      >
-        <FiniteFieldGraph
-          key={ size }
-          width={ size }
-          n={ modulus }
-          cells={ cells }
-          onClickCell={ ({ x, y }) => {
-            if (generator && generator.x === x && generator.y === y) {
-              setGenerator(null)
-              return
-            }
-            setGenerator({ x, y })
+    <Stack
+      alignItems="flex-start"
+      direction="row"
+      spacing={ 16 }
+      wrap
+    >
+      <Stack.Item>
+        <Resizable
+          size={{ width: size, height: size }}
+          minWidth={ 250 }
+          maxWidth={ 1080 }
+          enable={{
+            bottomRight: true, right: true, bottom: true,
+            top: false, left: false, topRight: false, bottomLeft: false, topLeft: false,
           }}
-        />
-      </Resizable>
-
-      <Details />
-    </Fragment>
+          onResizeStop={ handleResizeStop }
+          lockAspectRatio
+          style={{ backgroundColor: '#eee' }}
+        >
+          <GraphGrid
+            key={ size }
+            width={ size }
+            n={ modulus }
+            cells={ cells }
+            onClickCell={ ({ x, y }) => {
+              if (generator && generator.x === x && generator.y === y) {
+                setGenerator(null)
+                return
+              }
+              setGenerator({ x, y })
+            }}
+          />
+        </Resizable>
+      </Stack.Item>
+      <Stack.Item flex="1">
+        <Details />
+      </Stack.Item>
+    </Stack>
   )
 }
+
 
 

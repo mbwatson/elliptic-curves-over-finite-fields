@@ -1,6 +1,31 @@
-.graph-header {
-  margin-bottom: 1rem;
+svg.graph {
+  border: 1px solid #999;
+  margin: auto;
 }
 
-svg.graph .graph-cell {
+svg.graph .grid-line {
+  stroke: #999;
+  stroke-width: 1;
+}
+
+.details {
+  flex: 1;
+}
+
+.detail {
+  width: 100%;
+  background-color: #eee;
+  width: 100%;
+  border: 1px solid #999;
+  align-self: center;
+}
+
+.detail-title {
+  padding: 0.5rem;
+  border-bottom: 1px solid #ccc;
+  background-color: #ddd;
+}
+
+.detail-body {
+  padding: 0.5rem;
 }
