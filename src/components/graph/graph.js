@@ -15,7 +15,7 @@ export const GraphGrid = ({ n, width, cells, onClickCell }) => {
     setActiveRow(event.target.dataset.y)
   }
 
-  const handleLeaveGraphCell = event => {
+  const handleLeaveGraphCell = () => {
     setActiveColumn(null)
     setActiveRow(null)
   }
