@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 export const GraphGrid = ({ n, width, cells, onClickCell }) => {
   const [activeColumn, setActiveColumn] = useState(null)
   const [activeRow, setActiveRow] = useState(null)
-  const margin = 20
+  const margin = 22
   const gridWidth = width - 2 * margin
 
   const cellWidth = useMemo(() => gridWidth / n, [n])
@@ -22,7 +22,7 @@ export const GraphGrid = ({ n, width, cells, onClickCell }) => {
 
   const axisLabelProps = {
     fill: 'slategrey',
-    fontSize: 'smaller',
+    fontSize: 2 * Math.sqrt(cellWidth),
     textAnchor: 'middle',
     dominantBaseline: 'middle',
   }
