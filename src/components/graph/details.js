@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Stack } from 'rsuite'
 import { Latex } from '../latex'
 import { useConfig } from '../../context'
+import { Torus } from './torus'
 import './graph.css'
 
 //
@@ -108,6 +109,8 @@ export const Details = () => {
       <SubgroupList />
 
       <Homogenization />
+
+      <Torus majorSegments={ modulus } minorSegments={ modulus } />
 
     </Stack>
   )
