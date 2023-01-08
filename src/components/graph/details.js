@@ -110,7 +110,7 @@ export const Details = () => {
 
       <Homogenization />
 
-      <Torus majorSegments={ modulus } minorSegments={ modulus } />
+      <Torus n={ modulus } />
 
     </Stack>
   )

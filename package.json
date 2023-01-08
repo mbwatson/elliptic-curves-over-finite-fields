@@ -34,6 +34,7 @@
     "webpack-dev-server": "^4.9.2"
   },
   "dependencies": {
+    "@react-three/drei": "^9.51.15",
     "@react-three/fiber": "^8.9.2",
     "core-js": "^3.22.8",
     "get-primes": "^1.0.3",

@@ -1,57 +1,49 @@
 import { useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Canvas, useFrame } from '@react-three/fiber'
-import torus from 'primitive-torus'
+import { Grid, Torus as DreiTorus, useTexture, GradientTexture } from '@react-three/drei'
 import { useConfig } from '../../context'
+import faceImage from './ffffff.jpg'
 
-const mesh = torus({
-  majorRadius: 1,
-  minorRadius: 0.4,
-  majorSegments: 12,
-  minorSegments: 48,
-})
+const ActualTorus = ({ n }) => {
+  const scene = useRef()
+  const texture = useTexture({
+    map: faceImage,
+  })
 
-console.log(mesh)
+  useFrame(() => {
+    scene.current.rotation.y += 0.01
+    scene.current.rotation.x += 0.01
+    scene.current.rotation.z += 0.0
+  })
 
-const ActualTorus = ({ majorSegments, minorSegments, ...props }) => {
-  // This reference gives us direct access to the THREE.Mesh object
-  const ref = useRef()
-  // Subscribe this component to the render-loop, rotate the mesh every frame
-  useFrame((state, delta) => (ref.current.rotation.x += delta))
-  // Return the view, these are regular Threejs elements expressed in JSX
   return (
-    <mesh { ...props } ref={ ref } scale={ 1 }>
-      <torusGeometry args={ [
-        1, // radius - Radius of the torus, from center of the torus to the center of the tube. Default is 1.
-        0.4, // tube — Radius of the tube. Default is 0.4.
-        majorSegments, // radialSegments — Default is 12
-        minorSegments, // tubularSegments — Default is 48.
-        Math.PI * 2, //arc
-      ] } />
-      <meshStandardMaterial color="darkcyan" wireframe />
-    </mesh>
+    <group>
+      <DreiTorus ref={ scene } args={[2, 1, n, n]}>
+        <meshBasicMaterial wireframe { ...texture } />
+      </DreiTorus>
+    </group>
   )
 }
 
 ActualTorus.propTypes = {
-  majorSegments: PropTypes.number.isRequired,
-  minorSegments: PropTypes.number.isRequired,
+  n: PropTypes.number.isRequired,
 }
 
 //
-export const Torus = ({ majorSegments, minorSegments }) => {
+
+export const Torus = ({ n }) => {
   return (
     <div style={{ height: '500px', border: '1px solid grey' }}>
       <Canvas>
         <ambientLight />
-        <pointLight position={ [0, 10, 10] } />
-        <ActualTorus position={ [-1.2, 0, 0] } majorSegments={ majorSegments } minorSegments={ minorSegments } />
+        <pointLight position={ [2, 2, 2] } />
+        <ActualTorus n={ n } />
       </Canvas>
     </div>
   )
 }
 
 Torus.propTypes = {
-  majorSegments: PropTypes.number.isRequired,
-  minorSegments: PropTypes.number.isRequired,
+  n: PropTypes.number.isRequired,
 }
