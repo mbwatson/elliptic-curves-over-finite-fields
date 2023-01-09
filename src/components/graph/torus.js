@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { Canvas, /*useFrame*/ } from '@react-three/fiber'
+import { Canvas } from '@react-three/fiber'
 import {
   Point, Points, OrbitControls,
 } from '@react-three/drei'
