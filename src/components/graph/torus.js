@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Canvas, /*useFrame*/ } from '@react-three/fiber'
 import {
@@ -7,8 +7,6 @@ import {
 import torus from 'primitive-torus'
 
 const ActualTorus = ({ n }) => {
-  const scene = useRef()
-
   const mesh = useMemo(() => torus({
     majorRadius: 2,
     minorRadius: 1,
@@ -16,17 +14,8 @@ const ActualTorus = ({ n }) => {
     minorSegments: n,
   }), [n])
 
-  console.log(mesh)
-  console.log(mesh.positions.flat(), mesh.cells.flat())
-
-  // useFrame(() => {
-  //   scene.current.rotation.y += 0.01
-  //   scene.current.rotation.x += 0.01
-  //   scene.current.rotation.z += 0.0
-  // })
-
   return (
-    <group ref={ scene }>
+    <group>
       <Points size={ 0.1 }>
         {
           mesh.positions.map(([x, y, z]) => (
