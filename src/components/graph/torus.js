@@ -1,27 +1,43 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { Grid, Torus as DreiTorus, useTexture, GradientTexture } from '@react-three/drei'
-import { useConfig } from '../../context'
-import faceImage from './ffffff.jpg'
+import { Canvas, /*useFrame*/ } from '@react-three/fiber'
+import {
+  Point, Points, OrbitControls,
+} from '@react-three/drei'
+import torus from 'primitive-torus'
 
 const ActualTorus = ({ n }) => {
   const scene = useRef()
-  const texture = useTexture({
-    map: faceImage,
-  })
 
-  useFrame(() => {
-    scene.current.rotation.y += 0.01
-    scene.current.rotation.x += 0.01
-    scene.current.rotation.z += 0.0
-  })
+  const mesh = useMemo(() => torus({
+    majorRadius: 2,
+    minorRadius: 1,
+    majorSegments: n,
+    minorSegments: n,
+  }), [n])
+
+  console.log(mesh)
+  console.log(mesh.positions.flat(), mesh.cells.flat())
+
+  // useFrame(() => {
+  //   scene.current.rotation.y += 0.01
+  //   scene.current.rotation.x += 0.01
+  //   scene.current.rotation.z += 0.0
+  // })
 
   return (
-    <group>
-      <DreiTorus ref={ scene } args={[2, 1, n, n]}>
-        <meshBasicMaterial wireframe { ...texture } />
-      </DreiTorus>
+    <group ref={ scene }>
+      <Points size={ 0.1 }>
+        {
+          mesh.positions.map(([x, y, z]) => (
+            <Point
+              key={ `point-${ x }-${ y }-${ z }` }
+              position={[x, y, z]}
+            />
+          ))
+        }
+        <pointsMaterial color="#889" size={ 0.25 } round />
+      </Points>
     </group>
   )
 }
@@ -34,11 +50,12 @@ ActualTorus.propTypes = {
 
 export const Torus = ({ n }) => {
   return (
-    <div style={{ height: '500px', border: '1px solid grey' }}>
+    <div style={{ height: '600px', border: '1px solid grey' }}>
       <Canvas>
         <ambientLight />
         <pointLight position={ [2, 2, 2] } />
         <ActualTorus n={ n } />
+        <OrbitControls />
       </Canvas>
     </div>
   )
