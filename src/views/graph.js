@@ -57,6 +57,7 @@ export const GraphView = () => {
     }
     setGenerator({ x, y })
   }
+  console.log(subgroup)
 
   return (
     <Stack
@@ -88,8 +89,14 @@ export const GraphView = () => {
           <Torus
             n={ modulus }
             width={ size }
-            nodes={
+            graphNodes={
               graph.map(p => ({
+                ...p.torusCoordinates,
+                data: { col: p.x, row: p.y },
+              }))
+            }
+            subgroupNodes={
+              subgroup.map(p => ({
                 ...p.torusCoordinates,
                 data: { col: p.x, row: p.y },
               }))

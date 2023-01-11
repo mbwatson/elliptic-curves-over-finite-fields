@@ -8,7 +8,7 @@ import './index.css'
 import 'katex/dist/katex.min.css'
 import 'rsuite/dist/rsuite.min.css'
 
-const somePrimes = prime(100)
+const somePrimes = prime(30)
 
 export const EquationEditor = () => {
   const { equationLatex, modulus, params, setModulus, setParam } = useConfig()

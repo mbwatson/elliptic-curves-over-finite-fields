@@ -123,7 +123,18 @@ export const ConfigProvider = ({ children }) => {
       elements = [...elements, prevPoint]
       nextPoint = addPoints(prevPoint, generator)
     }
-    return elements
+    return elements.map(node => {
+      const u = node.y / modulus * twoPi
+      const v = node.x / modulus * twoPi
+      return {
+        ...node,
+        torusCoordinates: {
+          x: (2 + 1 * Math.cos(v)) * Math.cos(u),   // x = (majorRadius + minorRadius * cos(v)) * cos(u),
+          y: (2 + 1 * Math.cos(v)) * Math.sin(u),   // y = (majorRadius + minorRadius * cos(v)) * sin(u),
+          z: 1 * Math.sin(v),                       // z = minorRadius * sin(v),
+        }
+      }
+    })
   }, [generator])
 
   return (

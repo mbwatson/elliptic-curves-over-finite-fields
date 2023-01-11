@@ -8,13 +8,15 @@ import createtorusMesh from '../../util/torus'
 
 //
 
-export const Torus = ({ n, width, nodes, onClickNode }) => {
+export const Torus = ({ n, width, graphNodes, subgroupNodes, onClickNode }) => {
   const mesh = useMemo(() => createtorusMesh({
     majorRadius: 2,
     minorRadius: 1,
     majorSegments: n,
     minorSegments: n,
   }), [n])
+
+  console.log({ graphNodes, subgroupNodes })
 
   const handleClickNode = node => () => {
     onClickNode && onClickNode(node)
@@ -36,7 +38,7 @@ export const Torus = ({ n, width, nodes, onClickNode }) => {
               const { x, y, z } = coordinates
               return (
                 <Point
-                  key={ `point-${ x }-${ y }-${ z }` }
+                  key={ `node-${ x }-${ y }-${ z }` }
                   position={[ x, y, z ]}
                 />
               )
@@ -46,9 +48,21 @@ export const Torus = ({ n, width, nodes, onClickNode }) => {
         <Points>
           <PointMaterial size={ 0.5 } color="#89a" />
           {
-            nodes.map(({ x, y, z, data }) => (
+            graphNodes.map(({ x, y, z, data }) => (
               <Point
-                key={ `graph-point-${ x }-${ y }-${ z }` }
+                key={ `graph-node-${ x }-${ y }-${ z }` }
+                position={[ x, y, z ]}
+                onClick={ handleClickNode({ x: data.col, y: data.row }) }
+              />
+            ))
+          }
+        </Points>
+        <Points>
+          <PointMaterial size={ 0.5 } color="darkcyan" />
+          {
+            subgroupNodes.map(({ x, y, z, data }) => (
+              <Point
+                key={ `subgroup-node-${ x }-${ y }-${ z }` }
                 position={[ x, y, z ]}
                 onClick={ handleClickNode({ x: data.col, y: data.row }) }
               />
@@ -64,6 +78,7 @@ export const Torus = ({ n, width, nodes, onClickNode }) => {
 Torus.propTypes = {
   n: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
-  nodes: PropTypes.array.isRequired,
+  graphNodes: PropTypes.array.isRequired,
+  subgroupNodes: PropTypes.array.isRequired,
   onClickNode: PropTypes.func,
 }
