@@ -1,3 +1,3 @@
 export * from './details'
-export * from './graph'
+export * from './grid'
 export * from './torus'

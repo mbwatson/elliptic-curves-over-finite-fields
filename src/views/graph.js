@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Stack } from 'rsuite'
 import { Resizable } from 're-resizable'
 import { useConfig } from '../context'
-import { Details, GraphGrid } from '../components/graph'
+import { Details, GraphGrid, Torus } from '../components/graph'
 
 //
 
@@ -50,6 +50,14 @@ export const GraphView = () => {
     return [...returnCells]
   }, [generator, graph])
 
+  const handleClickElement = ({ x, y }) => {
+    if (generator && generator.x === x && generator.y === y) {
+      setGenerator(null)
+      return
+    }
+    setGenerator({ x, y })
+  }
+
   return (
     <Stack
       alignItems="flex-start"
@@ -75,13 +83,18 @@ export const GraphView = () => {
             width={ size }
             n={ modulus }
             cells={ cells }
-            onClickCell={ ({ x, y }) => {
-              if (generator && generator.x === x && generator.y === y) {
-                setGenerator(null)
-                return
-              }
-              setGenerator({ x, y })
-            }}
+            onClickCell={ handleClickElement }
+          />
+          <Torus
+            n={ modulus }
+            width={ size }
+            nodes={
+              graph.map(p => ({
+                ...p.torusCoordinates,
+                data: { col: p.x, row: p.y },
+              }))
+            }
+            onClickNode={ handleClickElement }
           />
         </Resizable>
       </Stack.Item>

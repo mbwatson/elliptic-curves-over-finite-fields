@@ -2,6 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import PropTypes from 'prop-types'
 import { invmod, mod } from 'mathjs'
 
+const twoPi = 2 * Math.PI
+
 //
 
 const ConfigContext = createContext({ })
@@ -50,10 +52,23 @@ export const ConfigProvider = ({ children }) => {
     }`
   }, [modulus, params.a, params.b])
 
-  const graph = useMemo(() => scalars.reduce((allCells, col) => [
+  const graph = useMemo(() => scalars.reduce((allCells, col, j) => [
     ...allCells,
-    ...scalars.map(row => ({ x: col, y: row })).filter(check)
+    ...scalars.map((row, i) => {
+      const u = i / modulus * twoPi
+      const v = j / modulus * twoPi
+
+      return {
+        x: col, y: row,
+        torusCoordinates: {
+          x: (2 + 1 * Math.cos(v)) * Math.cos(u),   // x = (majorRadius + minorRadius * cos(v)) * cos(u),
+          y: (2 + 1 * Math.cos(v)) * Math.sin(u),   // y = (majorRadius + minorRadius * cos(v)) * sin(u),
+          z: 1 * Math.sin(v),                       // z = minorRadius * sin(v),
+        }
+      }
+    }).filter(check)
   ], []), [params.a, params.b, scalars])
+
 
   const modInverse = useCallback(a => invmod(a, modulus), [modulus])
    
@@ -87,7 +102,6 @@ export const ConfigProvider = ({ children }) => {
     const m = modP(slopeBetween(p, q))
     const x = modP((m**2 - p.x - q.x))
     const y = modP((m * (p.x - x) - p.y))
-    // console.log({ m, x, y: y })
     let sum = { x: x, y: y }
     return sum
   }
@@ -102,7 +116,7 @@ export const ConfigProvider = ({ children }) => {
     // as long as the next point is non (NaN, Nan),
     // we'll add them to our subgroup array and press on.
     while (
-      !isNaN(nextPoint.x) && !isNaN(nextPoint.y)
+      nextPoint && !isNaN(nextPoint.x) && !isNaN(nextPoint.y)
       && (nextPoint.x !== generator.x || nextPoint.y !== generator.y)
     ) {
       prevPoint = nextPoint
