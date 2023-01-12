@@ -16,8 +16,6 @@ export const Torus = ({ n, width, graphNodes, subgroupNodes, onClickNode }) => {
     minorSegments: n,
   }), [n])
 
-  console.log({ graphNodes, subgroupNodes })
-
   const handleClickNode = node => () => {
     onClickNode && onClickNode(node)
   }
