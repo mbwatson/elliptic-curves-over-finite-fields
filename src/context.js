@@ -13,7 +13,7 @@ export const useConfig = () => useContext(ConfigContext)
 export const ConfigProvider = ({ children }) => {
   const [generator, setGenerator] = useState(null)
   const [params, setParams] = useState({ a: 1, b: 1})
-  const [modulus, setModulus] = useState(3)
+  const [modulus, setModulus] = useState(5)
 
   const modP = useCallback(x => mod(x, modulus), [modulus])
 

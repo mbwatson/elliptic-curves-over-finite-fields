@@ -1,5 +1,25 @@
 import { useCallback, useMemo, useState } from 'react'
+import { Canvas } from '@react-three/fiber'
+import {
+  Grid, OrbitControls, PlaneGeometry,
+} from '@react-three/drei'
 import PropTypes from 'prop-types'
+
+const GridCell = ({ color, position }) => {
+  return (
+    <mesh rotation={ [-Math.PI / 2, 0, 0] } position={ [position[0], 0, position[1]] } >
+      <planeGeometry args={ [1, 1] } />
+      <meshStandardMaterial color={ color || 'red' } />
+    </mesh>
+  )
+}
+
+GridCell.propTypes = {
+  color: PropTypes.string.isRequired,
+  position: PropTypes.array.isRequired,
+}
+
+//
 
 export const GraphGrid = ({ n, width, cells, onClickCell }) => {
   const [activeColumn, setActiveColumn] = useState(null)
@@ -113,24 +133,23 @@ export const GraphGrid = ({ n, width, cells, onClickCell }) => {
   }, [activeColumn, activeRow])
 
   return (
-    <svg
-      className="graph"
-      width={ gridWidth + 2 * margin }
-      height={ gridWidth + 2 * margin }
-    >
-      <defs>
-        <filter id="glow">
-          <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#0246" />
-        </filter>
-      </defs>
-      <g transform={ `translate(${ margin } ${ margin })` }>
-        <XAxisLabels />
-        <YAxisLabels />
-        <Highlighting />
-        <GridLines />
-        <GraphCells />
-      </g>
-    </svg>
+    <Canvas camera={{ position: [0, n, 0] }} style={{ backgroundColor: '#fff', border: '1px solid grey', }}>
+      <ambientLight />
+      <gridHelper args={ [n, n] } />
+      <meshStandardMaterial />
+      <group position={ [(1 - n)/2, 0, (1 - n)/2] }>
+        {
+          cells.map(({ x, y }) => (
+            <GridCell
+              key={ `graph-cell-${ x }-${ y }` }
+              color="slategrey"
+              position={ [x, y] }
+            />
+          ))
+        }
+      </group>
+      <OrbitControls />
+    </Canvas>
   )
 }
 
