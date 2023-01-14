@@ -20,7 +20,7 @@
 }
 
 .equation-editor.locked .equation * {
-  color: teal !important;
+  color: #277fe2 !important;
 }
 
 .equation-editor.unlocked .equation * {
@@ -40,13 +40,19 @@
 }
 
 .header {
+  background-color: rgba(255,255,255,0.6);
+  -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px);
   align-items: stretch;
   flex-direction: column;
   align-items: center;
   border-bottom: 1px solid #ccc;
+  z-index: 9;
+  padding: 0 1rem;
+  gap: 1rem;
 }
 
-.header .left { width: 100%; }
+.header .left { width: 100%; flex: 1 }
 .header .right { width: 100%; }
 
 @media(min-width: 800px) {
@@ -62,38 +68,30 @@
   flex: 1;
 }
 
-svg.graph {
-  border: 1px solid #999;
-  margin: auto;
+.mode-toggle-button {
+  position: absolute;
+  top: 5rem;
+  left: 2rem;
+  z-index: 9;
 }
 
-svg.graph .grid-line {
-  stroke: #999;
-  stroke-width: 1;
+.grid-canvas {
+  background-color: #fff;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
-.details {
-  flex: 1;
+.torus-controls {
+  width: 200px;
+  position: absolute;
+  top: 5rem;
+  right: 5rem;
+  z-index: 9;
+  border: 1px dashed crimson;
 }
-
-.detail {
-  width: 100%;
-  background-color: #eee;
-  width: 100%;
-  border: 1px solid #999;
-  align-self: center;
-}
-
-.detail-title {
-  padding: 0.5rem;
-  border-bottom: 1px solid #ccc;
-  background-color: #ddd;
-}
-
-.detail-body {
-  padding: 0.5rem;
-}
-
 *, *::before, *::after {
   box-sizing: border-box;
 }
