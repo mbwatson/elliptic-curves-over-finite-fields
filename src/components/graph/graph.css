@@ -1,31 +1,24 @@
-svg.graph {
-  border: 1px solid #999;
-  margin: auto;
+.mode-toggle-button {
+  position: absolute;
+  top: 5rem;
+  left: 2rem;
+  z-index: 9;
 }
 
-svg.graph .grid-line {
-  stroke: #999;
-  stroke-width: 1;
+.grid-canvas {
+  background-color: #fff;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
-.details {
-  flex: 1;
-}
-
-.detail {
-  width: 100%;
-  background-color: #eee;
-  width: 100%;
-  border: 1px solid #999;
-  align-self: center;
-}
-
-.detail-title {
-  padding: 0.5rem;
-  border-bottom: 1px solid #ccc;
-  background-color: #ddd;
-}
-
-.detail-body {
-  padding: 0.5rem;
+.torus-controls {
+  width: 200px;
+  position: absolute;
+  top: 5rem;
+  right: 5rem;
+  z-index: 9;
+  border: 1px dashed crimson;
 }

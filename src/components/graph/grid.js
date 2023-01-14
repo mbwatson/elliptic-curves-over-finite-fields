@@ -1,142 +1,54 @@
-import { useCallback, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls } from '@react-three/drei'
 
-export const GraphGrid = ({ n, width, cells, onClickCell }) => {
-  const [activeColumn, setActiveColumn] = useState(null)
-  const [activeRow, setActiveRow] = useState(null)
-  const margin = 22
-  const gridWidth = width - 2 * margin
+//
 
-  const cellWidth = useMemo(() => gridWidth / n, [n])
-  const scalars = useMemo(() => [...Array(n).keys()], [n])
-
-  const handleHoverGraphCell = event => {
-    setActiveColumn(event.target.dataset.x)
-    setActiveRow(event.target.dataset.y)
-  }
-
-  const handleLeaveGraphCell = () => {
-    setActiveColumn(null)
-    setActiveRow(null)
-  }
-
-  const axisLabelProps = {
-    fill: 'slategrey',
-    fontSize: 2 * Math.sqrt(cellWidth),
-    textAnchor: 'middle',
-    dominantBaseline: 'middle',
-  }
-
-  const sharedCellProps = {
-    width: cellWidth,
-    height: cellWidth,
-  }
-
-  // background grid
-  const GridLines = useCallback(() => {
-    return scalars.concat(n).reduce((lines, x) => {
-      return [
-        ...lines,
-        <line 
-          key={ `grid-v-line-${ x }` } 
-          className="grid-line"
-          x1={ cellWidth * x } x2={ cellWidth * x }
-          y1="0" y2={ gridWidth }
-        />,
-        <line 
-          key={ `grid-h-line-${ x }` } 
-          className="grid-line"
-          x1="0" x2={ gridWidth }
-          y1={ cellWidth * x } y2={ cellWidth * x }
-        />,
-      ]
-    }, [])
-  }, [cellWidth, scalars])
-
-  // axis labels
-  const XAxisLabels = useCallback(() => scalars.map(x => (
-    <text
-      key={ `x-axis-label${ x }` }
-      className={ `x-axis-label-${ x }` }
-      x={ x * cellWidth + cellWidth / 2 } y={ -10 }
-      { ...axisLabelProps }
-    >{ x }</text>
-  )), [scalars, cellWidth])
-
-  const YAxisLabels = useCallback(() => scalars.map(y => (
-    <text
-      key={ `y-axis-label${ y }` }
-      className={ `y-axis-label-${ y }` }
-      x={ -10 } y={ y * cellWidth + cellWidth / 2 }
-      { ...axisLabelProps }
-    >{ y }</text>
-  )), [scalars, cellWidth])
-
-  // incoming cells
-  const GraphCells = useCallback(() => cells.map(cell => 
-    <rect
-      key={ cell.key }
-      className="graph-cell"
-      x={ cellWidth * cell.x } y={ cellWidth * cell.y }
-      data-x={ cell.x } data-y={ cell.y }
-      onClick={ handleClickGraphCell(cell) }
-      { ...sharedCellProps }
-      { ...cell.rectProps }
-      onMouseOver={ handleHoverGraphCell }
-      onMouseOut={ handleLeaveGraphCell }
-    />
-  ), [cells])
-
-  const handleClickGraphCell = cell => () => {
+export const GraphGrid = ({ n, cells, onClickCell }) => {
+  const handleClickCell = cell => () => {
     onClickCell && onClickCell(cell)
   }
 
-  const Highlighting = useCallback(() => {
-    if (!activeColumn || !activeRow) {
-      return null
-    }
-
-    return [
-      <rect
-        key="column-highlight"
-        x={ activeColumn * cellWidth } y={ 0 }
-        width={ cellWidth } height={ n * cellWidth }
-        fill="#ff02"
-      />,
-      <rect
-        key="row-highlight"
-        x={ 0 } y={ activeRow * cellWidth }
-        width={ n * cellWidth } height={ cellWidth }
-        fill="#ff02"
-      />
-    ]
-  }, [activeColumn, activeRow])
-
   return (
-    <svg
-      className="graph"
-      width={ gridWidth + 2 * margin }
-      height={ gridWidth + 2 * margin }
+    <Canvas
+      camera={{ position: [0, n, 0] }}
+      style={{
+        position: 'fixed', top: 0, left: 0,
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: '#fff',
+      }}
     >
-      <defs>
-        <filter id="glow">
-          <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#0246" />
-        </filter>
-      </defs>
-      <g transform={ `translate(${ margin } ${ margin })` }>
-        <XAxisLabels />
-        <YAxisLabels />
-        <Highlighting />
-        <GridLines />
-        <GraphCells />
-      </g>
-    </svg>
+      <ambientLight />
+      <gridHelper args={ [n, n] } />
+      <meshStandardMaterial />
+      <group position={ [(1 - n)/2, 0, (1 - n)/2] }>
+        {
+          cells.map(({ x, y, color }) => (
+            <mesh
+              key={ `cell-${ x }-${ y }` }
+              rotation={ [-Math.PI / 2, 0, 0] }
+              position={ [x, 0, y] }
+              color={ color }
+              onClick={ handleClickCell({ x, y }) }
+            >
+              <planeGeometry args={ [1, 1] } />
+              <meshStandardMaterial color={ color || 'red' } />
+            </mesh>
+          ))
+        }
+      </group>
+      <mesh position={ [-n/2, 0, -n/2] }>
+        <sphereBufferGeometry args={[n / 100, 15, 15]} attach="geometry" />
+        <meshBasicMaterial color="red" attach="material" />
+      </mesh>
+      <OrbitControls />
+    </Canvas>
   )
 }
 
 GraphGrid.propTypes = {
   n: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired,
-  cells: PropTypes.array.isRequired,
+  cells: PropTypes.object.isRequired,
   onClickCell: PropTypes.func,
 }

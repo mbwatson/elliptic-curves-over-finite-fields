@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { invmod, mod } from 'mathjs'
 
 const twoPi = 2 * Math.PI
+const GRID = 'GRID'
+const TORUS = 'TORUS'
 
 //
 
@@ -13,7 +15,11 @@ export const useConfig = () => useContext(ConfigContext)
 export const ConfigProvider = ({ children }) => {
   const [generator, setGenerator] = useState(null)
   const [params, setParams] = useState({ a: 1, b: 1})
-  const [modulus, setModulus] = useState(3)
+  const [modulus, setModulus] = useState(13)
+
+  const graphModes = { GRID, TORUS }
+  const [graphMode, setGraphMode] = useState(TORUS)
+
 
   const modP = useCallback(x => mod(x, modulus), [modulus])
 
@@ -60,10 +66,10 @@ export const ConfigProvider = ({ children }) => {
 
       return {
         x: col, y: row,
-        torusCoordinates: {
-          x: (2 + 1 * Math.cos(v)) * Math.cos(u),   // x = (majorRadius + minorRadius * cos(v)) * cos(u),
-          y: (2 + 1 * Math.cos(v)) * Math.sin(u),   // y = (majorRadius + minorRadius * cos(v)) * sin(u),
-          z: 1 * Math.sin(v),                       // z = minorRadius * sin(v),
+        torus: {
+          x: (2*modulus + modulus*Math.cos(v)) * Math.cos(u),   // x = (majorRadius + minorRadius * cos(v)) * cos(u),
+          y: (2*modulus + modulus*Math.cos(v)) * Math.sin(u),   // y = (majorRadius + minorRadius * cos(v)) * sin(u),
+          z: modulus * Math.sin(v),                       // z = minorRadius * sin(v),
         }
       }
     }).filter(check)
@@ -128,10 +134,10 @@ export const ConfigProvider = ({ children }) => {
       const v = node.x / modulus * twoPi
       return {
         ...node,
-        torusCoordinates: {
-          x: (2 + 1 * Math.cos(v)) * Math.cos(u),   // x = (majorRadius + minorRadius * cos(v)) * cos(u),
-          y: (2 + 1 * Math.cos(v)) * Math.sin(u),   // y = (majorRadius + minorRadius * cos(v)) * sin(u),
-          z: 1 * Math.sin(v),                       // z = minorRadius * sin(v),
+        torus: {
+          x: (2*modulus + modulus*Math.cos(v)) * Math.cos(u),   // x = (majorRadius + minorRadius * cos(v)) * cos(u),
+          y: (2*modulus + modulus*Math.cos(v)) * Math.sin(u),   // y = (majorRadius + minorRadius * cos(v)) * sin(u),
+          z: modulus * Math.sin(v),                       // z = minorRadius * sin(v),
         }
       }
     })
@@ -144,6 +150,7 @@ export const ConfigProvider = ({ children }) => {
       params, setParam, discriminant,
       equationLatex, homogenizationLatex, scalars, graph, slopeAt, addPoints,
       check, 
+      graphMode, graphModes, setGraphMode,
     }}>
       { children }
     </ConfigContext.Provider>

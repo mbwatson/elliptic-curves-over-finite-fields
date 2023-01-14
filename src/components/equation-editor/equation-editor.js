@@ -54,7 +54,7 @@ export const EquationEditor = () => {
       { editing ? <UnlockedEquation /> : <LockedEquation /> }
 
       <Button onClick={ () => setEditing(!editing) }>
-        <LockIcon style={{ color: editing ? 'grey' : 'darkcyan' }}/>
+        <LockIcon style={{ color: editing ? 'grey' : '#277fe2' }}/>
       </Button>
 
     </Stack>

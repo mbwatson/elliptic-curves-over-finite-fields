@@ -20,7 +20,7 @@
 }
 
 .equation-editor.locked .equation * {
-  color: teal !important;
+  color: #277fe2 !important;
 }
 
 .equation-editor.unlocked .equation * {

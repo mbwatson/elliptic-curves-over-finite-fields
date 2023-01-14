@@ -1,17 +1,17 @@
-import { useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Canvas } from '@react-three/fiber'
 import {
-  Point, PointMaterial, Points, OrbitControls,
+  Points, OrbitControls,
 } from '@react-three/drei'
 import createtorusMesh from '../../util/torus'
 
 //
 
-export const Torus = ({ n, width, graphNodes, subgroupNodes, onClickNode }) => {
+export const Torus = ({ n, nodes, onClickNode }) => {
   const mesh = useMemo(() => createtorusMesh({
-    majorRadius: 2,
-    minorRadius: 1,
+    majorRadius: 2 * n,
+    minorRadius: n,
     majorSegments: n,
     minorSegments: n,
   }), [n])
@@ -21,62 +21,64 @@ export const Torus = ({ n, width, graphNodes, subgroupNodes, onClickNode }) => {
   }
 
   return (
-    <div style={{
-      width: `${ width }px`,
-      height: `${ width }px`,
-      border: '1px solid grey',
-    }}>
-      <Canvas>
+    <Fragment>
+      <Canvas
+        camera={{ position: [0, 2 * n, 0] }}
+        style={{
+          position: 'fixed', top: 0, left: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: '#fff',
+        }}
+      >
         <ambientLight />
-        <pointLight position={ [2, 2, 2] } />
+
+        { /* base nodes */ }
         <Points>
-          <PointMaterial size={ 0.5 } color="#eee" />
           {
             mesh.positions.map(({ coordinates }) => {
               const { x, y, z } = coordinates
               return (
-                <Point
-                  key={ `node-${ x }-${ y }-${ z }` }
-                  position={[ x, y, z ]}
-                />
+                <mesh
+                  key={ `base-node-${ x }-${ y }-${ z }` }
+                  position={ [x, y, z] }
+                >
+                  <sphereBufferGeometry args={[1, 15, 15]} attach="geometry" />
+                  <meshBasicMaterial color="#f9f9f9" attach="material" />
+                </mesh>
               )
             })
           }
         </Points>
-        <Points>
-          <PointMaterial size={ 0.5 } color="#89a" />
-          {
-            graphNodes.map(({ x, y, z, data }) => (
-              <Point
-                key={ `graph-node-${ x }-${ y }-${ z }` }
-                position={[ x, y, z ]}
-                onClick={ handleClickNode({ x: data.col, y: data.row }) }
-              />
-            ))
-          }
-        </Points>
-        <Points>
-          <PointMaterial size={ 0.5 } color="darkcyan" />
-          {
-            subgroupNodes.map(({ x, y, z, data }) => (
-              <Point
-                key={ `subgroup-node-${ x }-${ y }-${ z }` }
-                position={[ x, y, z ]}
-                onClick={ handleClickNode({ x: data.col, y: data.row }) }
-              />
-            ))
-          }
-        </Points>
+
+        { /* graph nodes */
+          Object.keys(nodes).map(key => (
+            <Points key={ key }>
+              {
+                nodes[key].map(({ x, y, torus, color }) => (
+                  <Fragment key={ `${ key }--${ JSON.stringify(torus) }` }>
+                    <mesh
+                      position={ [torus.x, torus.y, torus.z] }
+                      onClick={ handleClickNode({ x, y }) }
+                    >
+                      <sphereBufferGeometry args={[1.1, 15, 15]} attach="geometry" />
+                      <meshBasicMaterial color={ color } attach="material" />
+                    </mesh>
+                  </Fragment>
+                ))
+              }
+            </Points>
+          ))
+        }
+
         <OrbitControls />
       </Canvas>
-    </div>
+    </Fragment>
   )
 }
 
 Torus.propTypes = {
   n: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired,
-  graphNodes: PropTypes.array.isRequired,
-  subgroupNodes: PropTypes.array.isRequired,
+  nodes: PropTypes.object.isRequired,
   onClickNode: PropTypes.func,
 }
