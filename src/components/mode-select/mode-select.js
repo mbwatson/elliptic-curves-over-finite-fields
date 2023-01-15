@@ -1,6 +1,5 @@
 import { SelectPicker } from 'rsuite'
 import { useConfig } from '../../context'
-import './index.css'
 
 export const ModeSelect = () => {
   const { graphMode, graphModes, setGraphMode } = useConfig()

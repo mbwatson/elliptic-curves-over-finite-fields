@@ -1,4 +1,4 @@
-import { FlexboxGrid, Header } from 'rsuite'
+import { Stack, Header } from 'rsuite'
 import { EquationEditor } from '../equation-editor'
 import { ModeSelect } from '../mode-select'
 import { DrawerToggler } from '../drawer'
@@ -6,20 +6,17 @@ import { DrawerToggler } from '../drawer'
 export const NavBar = () => {
   return (
     <Header
-      as={ FlexboxGrid }
+      as={ Stack }
       className="header"
       justify="flex-end"
       align="middle"
+      spacing={ 20 }
     >
-      <FlexboxGrid.Item>
+      <div style={{ flex: 1, textAlign: 'left' }}>
         <ModeSelect />
-      </FlexboxGrid.Item>
-      <FlexboxGrid.Item>
-        <EquationEditor />
-      </FlexboxGrid.Item>
-      <FlexboxGrid.Item>
-        <DrawerToggler />
-      </FlexboxGrid.Item>
+      </div>
+      <EquationEditor />
+      <DrawerToggler />
     </Header>
   )
 }
