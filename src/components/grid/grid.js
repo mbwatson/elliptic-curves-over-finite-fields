@@ -20,8 +20,6 @@ export const GraphGrid = ({ n, cells, onClickCell }) => {
       }}
     >
       <ambientLight />
-      <gridHelper args={ [n, n] } />
-      <meshStandardMaterial />
       <group position={ [(1 - n)/2, 0, (1 - n)/2] }>
         {
           cells.map(({ x, y, color }) => (
@@ -38,6 +36,8 @@ export const GraphGrid = ({ n, cells, onClickCell }) => {
           ))
         }
       </group>
+      <gridHelper args={ [n, n] } />
+      <meshStandardMaterial />
       <mesh position={ [-n/2, 0, -n/2] }>
         <sphereBufferGeometry args={[n / 100, 15, 15]} attach="geometry" />
         <meshBasicMaterial color="red" attach="material" />

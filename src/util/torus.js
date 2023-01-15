@@ -9,16 +9,12 @@ function createTorusMesh(opt) {
   const twoPi = 2 * Math.PI
   const arc = opt.arc || twoPi
 
-  const center = [0, 0, 0]
   let positions = []
 
   for (let j = 0; j <= minorSegments; j++) {
     for (let i = 0; i <= majorSegments; i++) {
       let u = i / majorSegments * arc
       let v = j / minorSegments * twoPi
-
-      center[0] = majorRadius * Math.cos(u)
-      center[1] = majorRadius * Math.sin(u)
 
       const vertex = {
         cell: { x: i, y: j },

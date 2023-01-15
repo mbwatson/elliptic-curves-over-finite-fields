@@ -1,9 +1,7 @@
 import { Fragment, useMemo } from 'react'
 import { useConfig } from '../context'
-import { GraphGrid, Torus } from '../components/graph'
-import '../components/graph/graph.css'
-
-//
+import { GraphGrid } from '../components/grid'
+import { Torus } from '../components/torus'
 
 //
 

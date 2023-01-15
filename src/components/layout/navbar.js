@@ -1,37 +1,20 @@
-import { Link } from 'react-router-dom'
-import { FlexboxGrid, Header, Nav, Navbar, SelectPicker } from 'rsuite'
-import { useConfig } from '../../context'
+import { FlexboxGrid, Header } from 'rsuite'
 import { EquationEditor } from '../equation-editor'
+import { ModeSelect } from '../mode-select'
 
 export const NavBar = () => {
-  const { graphMode, graphModes, setGraphMode } = useConfig()
-  const options = Object.keys(graphModes).map(mode => ({ label: mode, value: mode }))
-
   return (
     <Header
       as={ FlexboxGrid }
       className="header"
-      justify="space-between"
+      justify="flex-end"
       align="middle"
     >
-      <FlexboxGrid.Item className="left">
-        <Navbar className="navbar" appearance="subtle">
-          <Nav>
-            <Nav.Item as={ Link } to="/">Graph</Nav.Item>
-          </Nav>
-        </Navbar>
-      </FlexboxGrid.Item>
-      <FlexboxGrid.Item className="right">
-        <EquationEditor />
+      <FlexboxGrid.Item>
+        <ModeSelect />
       </FlexboxGrid.Item>
       <FlexboxGrid.Item>
-        <SelectPicker
-          data={ options }
-          value={ graphMode }
-          searchable={ false }
-          cleanable={ false }
-          onChange={ setGraphMode }
-        />
+        <EquationEditor />
       </FlexboxGrid.Item>
     </Header>
   )
