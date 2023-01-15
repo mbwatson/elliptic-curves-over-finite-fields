@@ -1,6 +1,7 @@
 import { FlexboxGrid, Header } from 'rsuite'
 import { EquationEditor } from '../equation-editor'
 import { ModeSelect } from '../mode-select'
+import { DrawerToggler } from '../drawer'
 
 export const NavBar = () => {
   return (
@@ -15,6 +16,9 @@ export const NavBar = () => {
       </FlexboxGrid.Item>
       <FlexboxGrid.Item>
         <EquationEditor />
+      </FlexboxGrid.Item>
+      <FlexboxGrid.Item>
+        <DrawerToggler />
       </FlexboxGrid.Item>
     </Header>
   )

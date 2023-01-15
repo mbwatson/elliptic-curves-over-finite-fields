@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
+import * as THREE from 'three'
 
 //
 
@@ -20,6 +21,7 @@ export const GraphGrid = ({ n, cells, onClickCell }) => {
       }}
     >
       <ambientLight />
+
       <group position={ [(1 - n)/2, 0, (1 - n)/2] }>
         {
           cells.map(({ x, y, color }) => (
@@ -31,18 +33,22 @@ export const GraphGrid = ({ n, cells, onClickCell }) => {
               onClick={ handleClickCell({ x, y }) }
             >
               <planeGeometry args={ [1, 1] } />
-              <meshStandardMaterial color={ color || 'red' } />
+              <meshStandardMaterial color={ color || 'red' } side={ THREE.DoubleSide } />
             </mesh>
           ))
         }
       </group>
+      
       <gridHelper args={ [n, n] } />
-      <meshStandardMaterial />
+      <axesHelper args={ [1] } position={ [-n/2, 0, -n/2] } />
+
       <mesh position={ [-n/2, 0, -n/2] }>
         <sphereBufferGeometry args={[n / 100, 15, 15]} attach="geometry" />
         <meshBasicMaterial color="red" attach="material" />
       </mesh>
+
       <OrbitControls />
+
     </Canvas>
   )
 }

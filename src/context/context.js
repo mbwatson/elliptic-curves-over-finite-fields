@@ -18,7 +18,7 @@ export const ConfigProvider = ({ children }) => {
   const [modulus, setModulus] = useState(13)
 
   const graphModes = { GRID, TORUS }
-  const [graphMode, setGraphMode] = useState(TORUS)
+  const [graphMode, setGraphMode] = useState(GRID)
 
 
   const modP = useCallback(x => mod(x, modulus), [modulus])

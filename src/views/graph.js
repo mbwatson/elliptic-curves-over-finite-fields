@@ -1,12 +1,14 @@
-import { Fragment, useMemo } from 'react'
+import { Fragment, useEffect, useMemo } from 'react'
 import { useConfig } from '../context'
 import { GraphGrid } from '../components/grid'
 import { Torus } from '../components/torus'
+import { Drawer, useDrawer } from '../components/drawer'
 
 //
 
 export const GraphView = () => {
   const { generator, setGenerator, graph, modulus, subgroup, graphMode, graphModes } = useConfig()
+  const drawer = useDrawer()
 
   const handleClickPoint = ({ x, y }) => {
     if (generator && generator.x === x && generator.y === y) {
@@ -60,6 +62,12 @@ export const GraphView = () => {
     }
   }, [generator, graph, modulus, subgroup])
 
+  useEffect(() => {
+    if (generator) {
+      drawer.toggle()
+    }
+  }, [generator])
+
   return (
     <Fragment>
       {
@@ -77,6 +85,7 @@ export const GraphView = () => {
           />
         )
       }
+      <Drawer />
     </Fragment>
   )
 }
