@@ -2,6 +2,7 @@ import { Stack, Header } from 'rsuite'
 import { EquationEditor } from '../equation-editor'
 import { ModeSelect } from '../mode-select'
 import { DrawerToggler } from '../drawer'
+import './index.css'
 
 export const NavBar = () => {
   return (
@@ -10,12 +11,11 @@ export const NavBar = () => {
       className="header"
       justify="flex-end"
       align="middle"
-      spacing={ 20 }
+      spacing={ 16 }
     >
-      <div style={{ flex: 1, textAlign: 'left' }}>
-        <ModeSelect />
-      </div>
+      <div style={{ flex: 1, textAlign: 'left' }} />
       <EquationEditor />
+      <ModeSelect />
       <DrawerToggler />
     </Header>
   )

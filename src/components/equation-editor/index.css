@@ -1,27 +1,19 @@
 .equation-editor {
-  font-size: 125%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
-}
-
-.equation-editor.unlocked {
-  background-color: #0001;
-}
-
-.equation-editor input {
-  width: 3rem;
+  padding: 0.5rem;
 }
 
 .equation-editor .equation {
   height: 3rem;
 }
 
-.equation-editor.locked .equation * {
+.equation-editor .equation * {
   color: #277fe2 !important;
 }
 
-.equation-editor.unlocked .equation * {
-  color: #333 !important;
+.equation-editor-popover input {
+  width: 2.5rem;
 }
+
